@@ -2,29 +2,41 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 
-public class ContinuousBuildSetting : ScriptableObject {
+[System.Serializable]
+public class uBuildSetting {
     public BuildTarget target = BuildTarget.StandaloneWindows64;
     public BuildOptions options = BuildOptions.None;
-    bool IsFoldOut = true;
-    string BuildName = "Build";
-    bool isEnabled = true;
+
+    public bool IsFoldOut = true;
+    public string BuildName = "Build";
+    public  bool isEnabled = true;
 
     public bool IsEnabled
     {
         get { return isEnabled; }
     }
 
-    bool HasCustomExtension;
-    string Extension;
+    public bool HasCustomExtension;
+    public string Extension;
 
-    public void OnGUI()
+
+    public void DrawGUI(uBuildWindow window)
     {
+        EditorGUILayout.BeginHorizontal();
         IsFoldOut = EditorGUILayout.Foldout( IsFoldOut, BuildName + " (" + target.ToString() + ')');
+        GUILayout.FlexibleSpace();
+        if(GUILayout.Button(window.rmBtnContent))
+        {
+            window.RemoveBuildSetting(this);
+        }
+        EditorGUILayout.EndHorizontal();
 
         if(IsFoldOut)
         {
             isEnabled = EditorGUILayout.Toggle("Enabled?", isEnabled);
             GUI.enabled = isEnabled;
+
+            BuildName = EditorGUILayout.TextField("BuildName: ", BuildName);
 
             BuildTarget newtarget = (BuildTarget)EditorGUILayout.EnumPopup("Target: ", target);
             if(newtarget != target)
