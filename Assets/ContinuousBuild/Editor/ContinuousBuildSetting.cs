@@ -7,6 +7,12 @@ public class ContinuousBuildSetting : ScriptableObject {
     public BuildOptions options = BuildOptions.None;
     bool IsFoldOut = true;
     string BuildName = "Build";
+    bool isEnabled = true;
+
+    public bool IsEnabled
+    {
+        get { return isEnabled; }
+    }
 
     bool HasCustomExtension;
     string Extension;
@@ -17,6 +23,9 @@ public class ContinuousBuildSetting : ScriptableObject {
 
         if(IsFoldOut)
         {
+            isEnabled = EditorGUILayout.Toggle("Enabled?", isEnabled);
+            GUI.enabled = isEnabled;
+
             BuildTarget newtarget = (BuildTarget)EditorGUILayout.EnumPopup("Target: ", target);
             if(newtarget != target)
             {
@@ -33,6 +42,7 @@ public class ContinuousBuildSetting : ScriptableObject {
                 Extension = EditorGUILayout.TextField("Custom Extension: ", Extension ?? DeterminateExtension(target));
                 EditorGUILayout.EndHorizontal();
             }
+            GUI.enabled = true;
         }
     }
 

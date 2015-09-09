@@ -44,8 +44,10 @@ public class ContinuousBuild : EditorWindow {
             settings[i].OnGUI();
         }
 
-        GUI.enabled = HasActiveScenes();
-        bool BuildBtnPressed = GUILayout.Button(GUI.enabled ? "Build" : "Build (Disabled: No enabled scenes!)");
+        GUI.enabled = HasActiveScenes() && HasActiveBuilds();
+        string ButtonText = !HasActiveScenes() ? " No enabled scenes" : "";
+        ButtonText += !HasActiveBuilds() ? HasActiveScenes() ? " No enabled builds" : " and no enabled builds" : "";
+        bool BuildBtnPressed = GUILayout.Button(GUI.enabled ? "Build" : "Build (Disabled:"+ButtonText+"!)");
         GUI.enabled = true;
 
         EditorGUILayout.EndVertical();
@@ -71,10 +73,13 @@ public class ContinuousBuild : EditorWindow {
 
         for(int i=0;i<settings.Count;++i)
         {
-            string err = settings[i].Build(BuildRootLocation, SceneStr);
-            if(err != "")
+            if(settings[i].IsEnabled)
             {
-                Debug.LogError(err);
+                string err = settings[i].Build(BuildRootLocation, SceneStr);
+                if(err != "")
+                {
+                    Debug.LogError(err);
+                }
             }
         }
     }
@@ -86,6 +91,18 @@ public class ContinuousBuild : EditorWindow {
         for (int i = 0; i < scenes.Length;++i)
         {
             if(scenes[i].enabled)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private bool HasActiveBuilds()
+    {
+        for (int i = 0; i < settings.Count; ++i)
+        {
+            if (settings[i].IsEnabled)
             {
                 return true;
             }
