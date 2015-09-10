@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class uBuildSetting {
@@ -19,12 +20,18 @@ public class uBuildSetting {
     public bool HasCustomExtension;
     public string Extension;
 
+    List<string> Errors = new List<string>();
+    Vector2 errorScroll = new Vector2();
 
     public void DrawGUI(uBuildWindow window)
     {
         EditorGUILayout.BeginHorizontal();
         IsFoldOut = EditorGUILayout.Foldout( IsFoldOut, BuildName + " (" + target.ToString() + ')');
         GUILayout.FlexibleSpace();
+        if(Errors.Count > 0)
+        {
+            GUILayout.Label(window.errBtnContent);
+        }
         if(GUILayout.Button(window.rmBtnContent))
         {
             window.RemoveBuildSetting(this);
@@ -35,7 +42,6 @@ public class uBuildSetting {
         {
             isEnabled = EditorGUILayout.Toggle("Enabled?", isEnabled);
             GUI.enabled = isEnabled;
-
             BuildName = EditorGUILayout.TextField("BuildName: ", BuildName);
 
             BuildTarget newtarget = (BuildTarget)EditorGUILayout.EnumPopup("Target: ", target);
@@ -55,6 +61,21 @@ public class uBuildSetting {
                 EditorGUILayout.EndHorizontal();
             }
             GUI.enabled = true;
+
+            if(Errors.Count > 0)
+            {
+                //EditorGUILayout.BeginScrollView(errorScroll, false, false);
+                GUILayout.Space(10);
+                EditorGUILayout.BeginHorizontal();
+                for (int i = 0; i < Errors.Count;++i)
+                {
+
+                    Vector2 h = GUI.skin.button.CalcSize(new GUIContent(Errors[i]));
+                    EditorGUILayout.SelectableLabel(Errors[i], GUILayout.Height(h.y), GUILayout.Width(h.x));
+                }
+                EditorGUILayout.EndHorizontal();
+                //EditorGUILayout.EndScrollView();
+            }
         }
     }
 
@@ -76,5 +97,15 @@ public class uBuildSetting {
             default:
                 return "";
         }
+    }
+
+    public void ClearErrors()
+    {
+        Errors.Clear();
+    }
+
+    public void PushError(string err)
+    {
+        Errors.Add(err);
     }
 }

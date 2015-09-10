@@ -22,6 +22,7 @@ public class uBuildWindow : EditorWindow {
     }
     GUIContent addBtnContent;
     public GUIContent rmBtnContent;
+    public GUIContent errBtnContent;
     public void OnEnable()
     {
 
@@ -32,6 +33,10 @@ public class uBuildWindow : EditorWindow {
         rmBtnContent = new GUIContent();
         //rmBtnContent.text = "Remove";
         rmBtnContent.image = Resources.Load("uBuild/Images/rmBtn") as Texture2D;
+
+        errBtnContent = new GUIContent();
+        //rmBtnContent.text = "Remove";
+        errBtnContent.image = Resources.Load("uBuild/Images/errIcon") as Texture2D;
     }
 
     public void OnGUI()
@@ -103,17 +108,20 @@ public class uBuildWindow : EditorWindow {
             }
         }
 
+        BuildTarget prev = EditorUserBuildSettings.activeBuildTarget;
         for(int i=0;i<db.settings.Count;++i)
         {
             if(db.settings[i].IsEnabled)
             {
+                db.settings[i].ClearErrors();
                 string err = db.settings[i].Build(BuildRootLocation, SceneStr);
                 if(err != "")
                 {
-                    Debug.LogError("uBuild Error: "+err);
+                    db.settings[i].PushError(err);
                 }
             }
         }
+        EditorUserBuildSettings.SwitchActiveBuildTarget(prev); // restore build target
     }
 
 
