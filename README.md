@@ -6,9 +6,8 @@ Sick of changing Builds all the time, choosing a folder and all that stuff?
 Sick of zipping / archiving your Builds manually?
 Great so was I.
 
-But wait, uBuild to the rescue!
-
 Simple and slick project-based Build Management.
+
 One-Button Builds (as far as supported - means iPhone Builds on Window is a no-go)
 
 ## Current Features
