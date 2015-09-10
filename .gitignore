@@ -4,9 +4,11 @@
 # List them here  #
 # =============== #
 
-# =============== #
-# ContinuousBuild #
-# =============== #
+# ====== #
+# uBuild #
+# ====== #
+uBuildSettings.asset*
+
 
 # =============== #
 # UnityVS	  #
