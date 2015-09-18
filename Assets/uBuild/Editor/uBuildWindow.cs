@@ -62,6 +62,10 @@ public class uBuildWindow : EditorWindow {
 
         if(GUILayout.Button(addBtnContent))
         {
+            if(db.settings == null)
+            {
+                db.settings = new List<uBuildSetting>();
+            }
             db.settings.Add(new uBuildSetting());
             AssetDatabase.SaveAssets();
         }
@@ -70,11 +74,14 @@ public class uBuildWindow : EditorWindow {
         scroll = EditorGUILayout.BeginScrollView(scroll, false, false);
         GUILayout.Space(10);
 
-
-        for (int i = 0; i < db.settings.Count;++i)
+        if(db != null && db.settings != null)
         {
-            db.settings[i].DrawGUI(this);
+            for (int i = 0; i < db.settings.Count;++i)
+            {
+                db.settings[i].DrawGUI(this);
+            }
         }
+
 
         EditorGUILayout.EndScrollView();
 
@@ -140,11 +147,14 @@ public class uBuildWindow : EditorWindow {
 
     private bool HasActiveBuilds()
     {
-        for (int i = 0; i < db.settings.Count; ++i)
+        if(db != null & db.settings != null)
         {
-            if (db.settings[i].IsEnabled)
+            for (int i = 0; i < db.settings.Count; ++i)
             {
-                return true;
+                if (db.settings[i].IsEnabled)
+                {
+                    return true;
+                }
             }
         }
         return false;

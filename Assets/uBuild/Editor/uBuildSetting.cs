@@ -81,7 +81,14 @@ public class uBuildSetting {
 
     public string Build(string root, string[] SceneStr)
     {
-        return BuildPipeline.BuildPlayer(SceneStr, root + System.IO.Path.DirectorySeparatorChar + BuildName + "-" + target.ToString() + System.IO.Path.DirectorySeparatorChar + Application.productName + (HasCustomExtension ? Extension : DeterminateExtension(target)), target, options);
+        string Path = root + System.IO.Path.DirectorySeparatorChar + BuildName + "-" + target.ToString() + System.IO.Path.DirectorySeparatorChar ;
+        if(!System.IO.Directory.Exists(Path))
+        {
+            System.IO.Directory.CreateDirectory(Path);
+        }
+
+        string AppFile = Application.productName + (HasCustomExtension ? Extension : DeterminateExtension(target));
+        return BuildPipeline.BuildPlayer(SceneStr, Path+AppFile, target, options);
     }
 
     private static string DeterminateExtension(BuildTarget target)
